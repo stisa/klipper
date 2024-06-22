@@ -18,17 +18,17 @@ class MIRlikeKinematics:
         self.rails = steppers[:3]
 
         # CHECKME: all rails use all steppers...
-        self.rails[0].get_endstops()[0][0].add_stepper(steppers[1].get_steppers[0]())
-        self.rails[0].get_endstops()[0][0].add_stepper(steppers[2].get_steppers[0]())
-        self.rails[0].get_endstops()[0][0].add_stepper(steppers[3].get_steppers[0]())
+        self.rails[0].get_endstops()[0][0].add_stepper(steppers[1].get_steppers()[0])
+        self.rails[0].get_endstops()[0][0].add_stepper(steppers[2].get_steppers()[0])
+        self.rails[0].get_endstops()[0][0].add_stepper(steppers[3].get_steppers()[0])
 
-        self.rails[1].get_endstops()[0][0].add_stepper(steppers[0].get_steppers[0]())
-        self.rails[1].get_endstops()[0][0].add_stepper(steppers[2].get_steppers[0]())
-        self.rails[1].get_endstops()[0][0].add_stepper(steppers[3].get_steppers[0]())
+        self.rails[1].get_endstops()[0][0].add_stepper(steppers[0].get_steppers()[0])
+        self.rails[1].get_endstops()[0][0].add_stepper(steppers[2].get_steppers()[0])
+        self.rails[1].get_endstops()[0][0].add_stepper(steppers[3].get_steppers()[0])
 
-        self.rails[2].get_endstops()[0][0].add_stepper(steppers[1].get_steppers[0]())
-        self.rails[2].get_endstops()[0][0].add_stepper(steppers[0].get_steppers[0]())
-        self.rails[2].get_endstops()[0][0].add_stepper(steppers[3].get_steppers[0]())
+        self.rails[2].get_endstops()[0][0].add_stepper(steppers[1].get_steppers()[0])
+        self.rails[2].get_endstops()[0][0].add_stepper(steppers[0].get_steppers()[0])
+        self.rails[2].get_endstops()[0][0].add_stepper(steppers[3].get_steppers()[0])
 
         self.rails[0].setup_itersolve("corexz_stepper_alloc", b"-") 
         self.rails[1].setup_itersolve("corexz_stepper_alloc", b"-")
