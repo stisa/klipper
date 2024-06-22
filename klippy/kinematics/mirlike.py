@@ -15,7 +15,7 @@ class MIRlikeKinematics:
         steppers = [
             stepper.PrinterRail(config.getsection("stepper_" + n)) for n in "abcd"
         ]
-        self.rails = [steppers[:3]]
+        self.rails = steppers[:3]
 
         # CHECKME: all rails use all steppers...
         self.rails[0].get_endstops()[0][0].add_stepper(steppers[1])
