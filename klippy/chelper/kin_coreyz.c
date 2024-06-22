@@ -35,6 +35,6 @@ coreyz_stepper_alloc(char type)
         sk->calc_position_cb = coreyz_stepper_plus_calc_position;
     else if (type == '-')
         sk->calc_position_cb = coreyz_stepper_minus_calc_position;
-    sk->active_flags = AF_X | AF_Z;
+    sk->active_flags = AF_Y | AF_Z;
     return sk;
 }
