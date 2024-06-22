@@ -12,18 +12,23 @@ import stepper
 class MIRlikeKinematics:
     def __init__(self, toolhead, config):
         # Setup axis rails
-        self.rails = [
+        steppers = [
             stepper.PrinterRail(config.getsection("stepper_" + n)) for n in "abcd"
         ]
-        # CHECKME: endstops are one per motor, but not shared
-        # for s in self.rails[1].get_steppers():
-        #     self.rails[0].get_endstops()[0][0].add_stepper(s)
-        # for s in self.rails[0].get_steppers():
-        #     self.rails[1].get_endstops()[0][0].add_stepper(s)
-        # for s in self.rails[2].get_steppers():
-        #     self.rails[3].get_endstops()[0][0].add_stepper(s)
-        # for s in self.rails[3].get_steppers():
-        #     self.rails[2].get_endstops()[0][0].add_stepper(s)
+        self.rails = [steppers[:3]]
+
+        # CHECKME: all rails use all steppers...
+        self.rails[0].get_endstops()[0][0].add_stepper(steppers[1])
+        self.rails[0].get_endstops()[0][0].add_stepper(steppers[2])
+        self.rails[0].get_endstops()[0][0].add_stepper(steppers[3])
+
+        self.rails[1].get_endstops()[0][0].add_stepper(steppers[0])
+        self.rails[1].get_endstops()[0][0].add_stepper(steppers[2])
+        self.rails[1].get_endstops()[0][0].add_stepper(steppers[3])
+
+        self.rails[2].get_endstops()[0][0].add_stepper(steppers[1])
+        self.rails[2].get_endstops()[0][0].add_stepper(steppers[0])
+        self.rails[2].get_endstops()[0][0].add_stepper(steppers[3])
 
         self.rails[0].setup_itersolve("corexz_stepper_alloc", b"-") 
         self.rails[1].setup_itersolve("corexz_stepper_alloc", b"+")
