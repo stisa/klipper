@@ -17,22 +17,20 @@ class MIRlikeKinematics:
         ]
         self.rails = steppers[:3]
 
-        # CHECKME: all rails use all steppers...
+        # X uses A and B
         self.rails[0].get_endstops()[0][0].add_stepper(steppers[1].get_steppers()[0])
-        self.rails[0].get_endstops()[0][0].add_stepper(steppers[2].get_steppers()[0])
-        self.rails[0].get_endstops()[0][0].add_stepper(steppers[3].get_steppers()[0])
-
-        self.rails[1].get_endstops()[0][0].add_stepper(steppers[0].get_steppers()[0])
+        # Y uses C and D
         self.rails[1].get_endstops()[0][0].add_stepper(steppers[2].get_steppers()[0])
         self.rails[1].get_endstops()[0][0].add_stepper(steppers[3].get_steppers()[0])
-
+        
+        # Z uses everything
         self.rails[2].get_endstops()[0][0].add_stepper(steppers[1].get_steppers()[0])
         self.rails[2].get_endstops()[0][0].add_stepper(steppers[0].get_steppers()[0])
         self.rails[2].get_endstops()[0][0].add_stepper(steppers[3].get_steppers()[0])
 
         self.rails[0].setup_itersolve("corexz_stepper_alloc", b"-") 
-        self.rails[1].setup_itersolve("corexz_stepper_alloc", b"-")
-        self.rails[2].setup_itersolve("coreyz_stepper_alloc", b"-")
+        self.rails[1].setup_itersolve("coreyz_stepper_alloc", b"-")
+        self.rails[2].setup_itersolve("cartesian_stepper_alloc", b"-")
 
         for s in self.get_steppers():
             s.set_trapq(toolhead.get_trapq())
@@ -58,6 +56,7 @@ class MIRlikeKinematics:
 
     def calc_position(self, stepper_positions):
         pos = [stepper_positions[rail.get_name()] for rail in self.rails]
+        print(pos) # I don't get this part. What about duplicates?
         # X = 1/2 (a-b), where a and b are the two opposite motors
         # Y = 1/2 (c-d), where c and d are the two remaining opposite motors
         # Z = 1/4 (a+b+c+d)
