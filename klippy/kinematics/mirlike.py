@@ -15,17 +15,16 @@ class MIRlikeKinematics:
         steppers = [
             stepper.PrinterRail(config.getsection("stepper_" + n)) for n in "abcd"
         ]
-        self.rails = steppers[:3]
+        self.rails = [steppers[0],steppers[2],steppers[1]]
 
         # X uses A and B
         self.rails[0].get_endstops()[0][0].add_stepper(steppers[1].get_steppers()[0])
         # Y uses C and D
-        self.rails[1].get_endstops()[0][0].add_stepper(steppers[2].get_steppers()[0])
         self.rails[1].get_endstops()[0][0].add_stepper(steppers[3].get_steppers()[0])
         
         # Z uses everything
-        self.rails[2].get_endstops()[0][0].add_stepper(steppers[1].get_steppers()[0])
         self.rails[2].get_endstops()[0][0].add_stepper(steppers[0].get_steppers()[0])
+        self.rails[2].get_endstops()[0][0].add_stepper(steppers[2].get_steppers()[0])
         self.rails[2].get_endstops()[0][0].add_stepper(steppers[3].get_steppers()[0])
 
         self.rails[0].setup_itersolve("corexz_stepper_alloc", b"-") 
