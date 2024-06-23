@@ -12,25 +12,35 @@ import stepper
 class MIRlikeKinematics:
     def __init__(self, toolhead, config):
         # Setup axis rails
-        steppers = [
-            stepper.PrinterRail(config.getsection("stepper_" + n)) for n in "abcd"
-        ]
-        self.rails = [steppers[0],steppers[2],steppers[1]]
-
+        steppers = [config.getsection("stepper_" + n) for n in "abcd"]
+        self.rails = [stepper.PrinterRail(steppers[0]),stepper.PrinterRail(steppers[2]),stepper.PrinterRail(steppers[1])]
+     
         # X uses A and B
-        self.rails[0].get_endstops()[0][0].add_stepper(steppers[1].get_steppers()[0])
+        self.rails[0].get_endstops()[0][0].add_stepper(
+            self.rails[2].get_steppers()[0])
+        #self.rails[0].add_extra_stepper(steppers[1])
+     
         # Y uses C and D
-        self.rails[1].get_endstops()[0][0].add_stepper(steppers[3].get_steppers()[0])
-        
+        self.rails[1].add_extra_stepper(steppers[3])
         # Z uses everything
-        self.rails[2].get_endstops()[0][0].add_stepper(steppers[0].get_steppers()[0])
-        self.rails[2].get_endstops()[0][0].add_stepper(steppers[2].get_steppers()[0])
-        self.rails[2].get_endstops()[0][0].add_stepper(steppers[3].get_steppers()[0])
+        self.rails[2].get_endstops()[0][0].add_stepper(
+            self.rails[0].get_steppers()[0])
+        self.rails[2].get_endstops()[0][0].add_stepper(
+            self.rails[1].get_steppers()[0])
+        self.rails[2].get_endstops()[0][0].add_stepper(
+            self.rails[1].get_steppers()[1])
+        
+        #self.rails[2].add_extra_stepper(steppers[0]) #a
+        #self.rails[2].add_extra_stepper(steppers[2]) #b
+        #self.rails[2].add_extra_stepper(steppers[3]) #d
 
         self.rails[0].setup_itersolve("corexz_stepper_alloc", b"-") 
         self.rails[1].setup_itersolve("coreyz_stepper_alloc", b"-")
         self.rails[2].setup_itersolve("cartesian_stepper_alloc", b"-")
-
+        logging.error("Rails")
+        logging.error(self.rails)
+        logging.error([n.get_name() for n in self.rails[2].get_steppers()])
+        
         for s in self.get_steppers():
             s.set_trapq(toolhead.get_trapq())
             toolhead.register_step_generator(s.generate_steps)
@@ -51,11 +61,12 @@ class MIRlikeKinematics:
         self.axes_max = toolhead.Coord(*[r[1] for r in ranges], e=0.0)
 
     def get_steppers(self):
-        return [s for rail in self.rails for s in rail.get_steppers()]
+        return self.steppers
 
     def calc_position(self, stepper_positions):
-        pos = [stepper_positions[rail.get_name()] for rail in self.rails]
-        print(pos) # I don't get this part. What about duplicates?
+        pos = [stepper_positions[s.get_name()] for s in self.get_steppers()]
+        logging.error("calcpos-------------------")
+        logging.error(pos) # I don't get this part. What about duplicates?
         # X = 1/2 (a-b), where a and b are the two opposite motors
         # Y = 1/2 (c-d), where c and d are the two remaining opposite motors
         # Z = 1/4 (a+b+c+d)
